@@ -1,0 +1,16 @@
+grid = [[".", ".", ".", ".", ".", "."],
+        [".", "O", "O", ".", ".", "."],
+        ["O", "O", "O", "O", ".", "."],
+        ["O", "O", "O", "O", "O", "."],
+        [".", "O", "O", "O", "O", "O"],
+        ["O", "O", "O", "O", "O", "."],
+        ["O", "O", "O", "O", ".", "."],
+        [".", "O", "O", ".", ".", "."],
+        [".", ".", ".", ".", ".", "."]]
+
+# Loop through the lists 1st, not the items
+
+for i in range(len(grid)): # Cycles through the "Rows"
+        for j in range(len(grid[i])): # Cycles through each value in the row in question (the columns)
+                print(grid[i][j], end="")
+        print("")
