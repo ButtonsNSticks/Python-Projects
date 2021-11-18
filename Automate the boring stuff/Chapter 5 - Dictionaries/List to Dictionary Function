@@ -1,0 +1,17 @@
+dragon_loot = ["Gold Coin", "Dagger", "Gold Coin", "Gold Coin", "Ruby"]  # A List
+player_inventory = {"Rope": 1, "Torch": 6, "Gold Coin": 42, "Dagger": 1, "Arrow": 12}  # Player Inventory
+
+
+def add_to_inventory(inventory, addeditems):
+
+    for item in addeditems:  # Cycle through the added Items List
+
+        if item in inventory:  # If the item already exists in the players inventory
+            inventory[item] += 1  # Add 1 to the total in player inventory.
+        else:
+            inventory[item] = 1 # If the item does not uet exist, add it to the inventory.
+
+    print(player_inventory)
+
+
+add_to_inventory(player_inventory, dragon_loot)
