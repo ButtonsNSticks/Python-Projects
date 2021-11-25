@@ -1,0 +1,47 @@
+#! python3
+# phoneandemail.py - Finds phone numbers and email addresses and copies them to the clipboard.
+
+import pyperclip
+import re
+
+# Setup Phone Number Regex
+phoneregex = re.compile(r"""(       # (Group 0) Entire phone number
+    (\d{3}|\(\d{3}\))?              # (Group 1) [OPTIONAL] Area Code
+    (\s|-|\.)?                      # (Group 2) [OPTIONAL] Seperator - Space or hyhen or dot.
+    (\d{3})                         # (Group 3) First 3 didgets
+    (\s|-|\.)                       # (Group 4) Seperator - Space or hypen or dot
+    (\d{4})                         # (Group 5) Next 4 didgets
+    (\s*(ext|x|ext.)\s*(\d{2,5}))?  # (Groups 6-8) [OPTIONAL] Extension - Must be at least 2 and at most 5 numbers.
+    )""", re.VERBOSE)
+
+# Setup Email Regex
+emailregex = re.compile(r"""(
+    [a-zA-Z0-9._%+-]+       # Custom Class - Finds the username, we don't use \w because we also need to hunt for
+                            # full stops, underscores, percentage symbols, plus and mins symbols etc.
+    @                       # Next find the @ Symbol
+    [a-zA-Z0-9.-]+          # Custom class - Finds the domain name
+    (\.[a-zA-Z]{2,4})       # [GROUP 0] Find . something like .com.
+)""", re.VERBOSE)
+
+# Find matches in clipboard text
+
+text = str(pyperclip.paste())  # Pastes the contents of the clipboard into the string "text".
+matches = []                      # Sets up an empty list as a GLOBAL variable
+
+for groups in phoneregex.findall(text): # As we have groups in our phoneregex this will return a list of TUPLES
+    phonenum = "-".join([groups[1], groups[3], groups[5]])  # This will join the area code and the phone no:
+    if groups[8] !="":
+        phonenum +=" x" + groups[8]
+    matches.append(phonenum)  # Add the phone number to the matches list.
+
+for groups in emailregex.findall(text):
+    matches.append(groups[0])  # Group 0 is the ENTIRE match object (the email address) so this is put in list.
+
+# Copy results into the clipboard
+
+if len(matches)>0:
+    pyperclip.copy("\n".join(matches))
+    print("Copied to clipboard:")
+    print("\n".join(matches))
+else:
+    print("No phone numbers or email address found.")
