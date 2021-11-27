@@ -1,0 +1,30 @@
+"""
+Write a function that takes a string and does the same thing as the strip() string method.
+If no other arguments are passed other than the string to strip, then whitespace characters
+will be removed from the beginning and end of the string. Otherwise, the characters
+specified in the second argument to the function will be removed from the string.
+
+"""
+import re
+
+startspaceregex = re.compile(r"^\s*")  # Finds spaces at start of string
+endspaceregex = re.compile(r"\s*$")  # Finds spaces at the end of a string
+
+
+def regexstrip(text, chars=None):
+
+    output = ""
+
+    if chars is None:  # If no chars have been specified
+        text1 = startspaceregex.sub("", text)  # Remove the whitespace at start
+        output = endspaceregex.sub("", text1)  # Remove the whitespace at end
+
+    if chars is not None:  # IF chars HAVE been passed
+        regexstring = r"[" + chars + "]"
+        findcharsregex = re.compile(regexstring)
+        output = findcharsregex.sub("", text)
+
+    print(output)
+
+
+regexstrip("    Hello there    ", "oe")
