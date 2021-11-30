@@ -1,5 +1,5 @@
 #! python3
-# This makes quizzes with questions & answers in random order, along with th answer key.
+# This makes quizzes with questions & answers in random order, along with the answer key.
 
 import random  # Allows for the generation of random numbers.
 
