@@ -1,0 +1,51 @@
+#! python3
+
+# This walks through a folder tree and searches for files with a certain file extension (pdf, jpg etc.).
+# It then copies those files from wherever they are into a new folder.
+
+# Import modules
+import os  # Needed for working with files & folders in the OS
+import shutil  # Needed for copying files & deleting the old backup dir.
+
+# Set the ath for listing the folders - it's the directory that the .py file is in.
+path = os.path.dirname(__file__)
+
+# Set the file extension that we wish to search for and copy when found
+file_ext = ".txt"
+
+# Set the destination directory which matching files will be copied to
+copy_dir = "Backup"
+
+# Get the FULL path to the destination directory
+
+copy_dir_full_path = os.path.join(os.getcwd(), copy_dir)
+
+# Check to see if the backup folder exists and if so, wipe it & make it again
+if os.path.exists(copy_dir) and os.path.isdir(copy_dir):  # Is it a folder and does it exist?
+    shutil.rmtree(copy_dir)  # Wipe the existing folder and all contents
+    os.makedirs(copy_dir)  # Make it again.
+
+# Get the full absolute file paths
+
+abs_working_directory = os.path.abspath(path)  # Gets the full path to our working directory
+copy_dir = os.path.join(abs_working_directory, copy_dir)  # Gets the full path to the Back Directory
+
+# Loop to get all of the folders in the directory
+# path = The current path
+# folders = The folders IN this path (subfolders) - this is what we want!
+# file = The name of each file found in the current path
+
+# Walk the folder tree
+# print(path)
+
+for current_folder, sub_folders, files in os.walk(path):
+    # print(current_folder) # Check the current folder is ok
+    for file in files:
+        # print(os.path.join(current_folder, file))  # Check the paths are ok.
+        if file.endswith(file_ext):
+            path_to_file = os.path.join(current_folder, file) # Get the full path of matching file.
+            # print (path_to_file)
+            # print (copy_dir)
+            print("Copying %s" % file)
+            shutil.copy(path_to_file, copy_dir)
+
