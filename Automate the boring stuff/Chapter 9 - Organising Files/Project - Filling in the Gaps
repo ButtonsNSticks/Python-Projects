@@ -1,0 +1,70 @@
+#! python3
+
+# Aim: Find all the files with a given prefix (e.g spam001.txt, spam002.txt etc) in a single folder
+# Locate any gaps in the numbering (so if there is spam001.txt & spam003.txt but no spam002.txt)
+# Rename all of them later files to close the gap.
+
+# Import modules
+import os  # Needed for working with files & folders in the OS
+import re  # Needed for working with Regex
+import shutil  # Needed for copying files & deleting the old backup dir.
+
+#  Define the path to use - it will be the same directory the pyton file is in.
+
+script_path = os.path.dirname(__file__)  # This is the ABSOLUTE path
+
+# Define the prefix
+prefix = "spam"
+
+# Define a regex which will locate the files
+
+file_format = re.compile(r"^(%s)((\d{3})(.txt))$" % prefix)
+
+# print(file_format)  # Uncomment to check the regex is ok
+
+# Setup Empty list to store found file names
+file_list=[]
+
+# Find the files in a SINGLE folder - i.e the one we are currently in
+
+with os.scandir(script_path) as dirs:  # This will scan the directory specified by script_path.
+
+    for entry in dirs:  # For every file and folder found
+
+        file_match = file_format.search(entry.name)  # Check to see if it's name matches the RegEx
+
+        if entry.is_file() and file_match is not None:  # If the current entry is a file whose name matches the Regex
+            file_list.append(file_match[0])  # Puts the names of the found files in a LIST
+
+# print(file_list)  # Uncomment to check the list is ok
+
+file_list.sort()  # Sorts the list in ASCENDING order
+
+for each_file in file_list:  # Now go through each file name saved in the list.
+
+    file_name = file_format.search(each_file)  # Get the name of the file as a match object (again).
+    file_number = (file_name[3])  # Grab the number 001, 002, etc. in file name - This is a STRING
+
+    position_in_list = file_list.index(each_file)  # Get the position of the file in the list (starts at 0)
+
+    desired_file_number = "%03d" % (position_in_list + 1)
+    # Add 1 onto the position in list and then convert it to a STRING formatted as 000, 001 etc
+    # This uses Fixed width number formatting
+
+    # We now want to check that the desired_file_number is EQUAL to the file_number
+    # If it isn't then we need to rename the file!
+
+    if file_number != desired_file_number: # Checks to see if there is a gap.
+
+        new_file_name = str(file_name[1]) + desired_file_number + str(file_name[4])  # Make the new file name
+        print("Renaming: " + str(file_name[0]) + " to: " + str(new_file_name))
+
+        # Generate the ABS paths for files
+        old_file_path = os.path.join(script_path, str(file_name[0]))
+        new_file_path = os.path.join(script_path, new_file_name)
+
+        # Rename the file using SHUTIL.MOVE
+        # print(old_file_path)  # Uncomment to check path
+        # print(new_file_path)  # Uncomment to check path
+
+        shutil.move(old_file_path, new_file_path)
